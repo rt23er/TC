@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>热力环流教学课件</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1505118380757-91f5f5632de0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover no-repeat fixed;
+            transition: all 0.5s;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 导航按钮样式 */
+        .nav-btn {
+            width: 180px;
+            margin: 15px 0;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .nav-btn.active {
+            background: rgba(231, 76, 60, 0.7);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 主页按钮样式 */
+        .home-btn {
+            margin-top: 30px;
+            background: rgba(52, 152, 219, 0.7);
+        }
+
+        /* 内容区域样式 */
+        .content {
+            flex: 1;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.85);
+            overflow-y: auto;
+            transition: all 0.5s;
+            display: none;
+        }
+
+        /* 章节样式 */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .concept {
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        /* 封面样式 */
+        .cover {
+            position: absolute;
+            top: 0;
+            left: 220px;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        .cover h1 {
+            font-size: 4rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 解析图样式 */
+        .explanation-diagram {
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .explanation-diagram img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .image-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .image-dot.active {
+            background-color: #3498db;
+        }
+
+        .image-count {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 动画演示样式 */
+        .animation-demo {
+            /*min-height: 80vh;*/
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        .animation-controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .control-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .animation-stage {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            /*overflow: hidden;*/
+        }
+
+        .stage-text {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 10%;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to bottom, #8B4513, #CD853F);
+            z-index: 1;
+        }
+
+        .heat-source {
+            position: absolute;
+            bottom: calc(10% + 20px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 20px;
+            background-color: #e74c3c;
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+            z-index: 2;
+        }
+
+        .cold-source {
+            position: absolute;
+            bottom: calc(10% + 20px);
+            left: 20%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 20px;
+            background-color: #3498db;
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+            z-index: 2;
+        }
+
+        .cold-source-right {
+            position: absolute;
+            bottom: calc(10% + 20px);
+            left: 80%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 20px;
+            background-color: #3498db;
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+            z-index: 2;
+        }
+
+        .air-parcel {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(52, 152, 219, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+            transition: all 1s ease-in-out;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+            z-index: 3;
+        }
+
+        .pressure-label {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            transition: opacity 0.5s;
+            z-index: 4;
+        }
+
+        .pressure-high {
+            color: #e74c3c;
+        }
+
+        .pressure-low {
+            color: #3498db;
+        }
+
+        .wind-arrow {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 3;
+        }
+
+        .wind-arrow::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background-color: #3498db;
+            transform: translateY(-50%);
+        }
+
+        .wind-arrow::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 26px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #3498db;
+            border-right: 2px solid #3498db;
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        /* 课堂练习样式 */
+        .quiz-container {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .quiz-question h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .quiz-options {
+            list-style-type: none;
+            margin: 10px 0;
+        }
+
+        .quiz-options li {
+            margin: 8px 0;
+        }
+
+        .quiz-options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .quiz-answer {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .quiz-answer.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .quiz-answer.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .quiz-answer.explanation {
+            background-color: #fff3cd;
+            color: #856404;
+            margin-top: 5px;
+        }
+
+        .submit-quiz {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .submit-quiz button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-quiz button:hover {
+            background-color: #218838;
+        }
+
+        .quiz-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-result.passed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .quiz-result.failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+
+        /* 热力环流应用切换按钮样式 */
+        .application-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .application-nav button {
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .application-nav button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .application-nav button.active {
+            background: rgba(231, 76, 60, 0.7);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    </style>
+</head>
+<script type="text/javascript" src="jquery.js"></script>
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_4603767_m7l3z37a708.css">
+<body>
+<!-- 侧边栏导航 -->
+<div class="sidebar">
+    <button class="nav-btn" data-target="pressure">气压和等压面</button>
+    <button class="nav-btn" data-target="principle">热力环流原理</button>
+    <button class="nav-btn" data-target="application">热力环流应用</button>
+    <button class="nav-btn" data-target="exercise">课堂练习</button>
+    <button class="nav-btn home-btn active" id="homeBtn">回主页</button>
+</div>
+
+<!-- 内容区域 -->
+<div class="content" id="content">
+    <div id="pressure" class="section">
+        <h2>气压和等压面</h2>
+        <div class="concept">
+            <h3>气压</h3>
+            <p>大气压强，即单位面积上所承受的空气柱重量。在气象学中，常用百帕(hPa)作为单位。标准大气压为1013.25hPa。</p>
+        </div>
+        <div class="explanation-diagram">
+            <div class="image-container">
+                <img id="pressureImage" src="https://tuchuang.org.cn/imgs/2025/05/24/a59ee63b91f08124.png"
+                     alt="气压和等压面解析图" title="点击切换图片">
+            </div>
+            <div class="image-nav" id="imageNav">
+                <div class="image-dot active" data-index="0"></div>
+                <div class="image-dot" data-index="1"></div>
+            </div>
+            <div class="image-count" id="imageCount">1/2</div>
+        </div>
+    </div>
+    <!--   热力环流图-->
+    <div id="principle" class="section">
+        <h2>热力环流原理</h2>
+        <div class="animation-demo">
+            <h3>热力环流过程演示</h3>
+            <div class="animation-controls">
+                <button class="control-btn" id="prevStep" onclick="playAn(-1)">上一步</button>
+                <!--                <button class="control-btn" id="playPause" onclick="playContinuousAnimation()">播放</button>-->
+                <button class="control-btn" id="nextStep" onclick="playAn(1)">下一步</button>
+                <button class="control-btn" id="resetAnimation" onclick="playAnimation(4)">重置</button>
+            </div>
+            <div class="animation-stage" id="animationStage">
+                <!--                <div class="stage-text" id="stageText">点击"播放"或"下一步"查看热力环流形成过程</div>-->
+                <div class="ground"></div>
+                <div class="heat-source"></div>
+                <div class="cold-source"></div>
+                <div class="cold-source-right"></div>
+                <div class="air-parcel" id="airParcel1">冷</div>
+                <div class="air-parcel" id="airParcel2">热</div>
+                <div class="air-parcel" id="airParcel3">冷</div>
+                <!--用于实现等压线变化动画-->
+                <canvas id="canvas">
+
+                </canvas>
+
+                <!-- 风向箭头 -->
+                <div class="arrow" id="a1">
+                </div>
+                <div class="arrow" id="a2">
+                </div>
+                <div class="arrow" id="a3">
+                </div>
+
+                <!--  气压高低标签 -->
+                <div class="left-top top" data-text="高">
+                    低
+                </div>
+                <div class="right-top top" data-text="低">
+                    低
+                </div>
+                <div class="center-top top" data-text="高">
+                    高
+                </div>
+                <div class="left-bottom bottom" data-text="高">
+                    高
+                </div>
+                <div class="right-bottom bottom" data-text="高">
+                    高
+                </div>
+                <div class="center-bottom bottom" data-text="低">
+                    低
+                </div>
+
+                <!--   字母标记-->
+                <div class="letter l1">
+                    A
+                </div>
+                <div class="letter l2">
+                    A'
+                </div>
+                <div class="letter l3">
+                    B
+                </div>
+                <div class="letter l4">
+                    B'
+                </div>
+                <div class="letter l5">
+                    C
+                </div>
+                <div class="letter l6">
+                    C'
+                </div>
+
+
+                <!--      空气流动箭头-->
+                <div class="c_l">
+
+                </div>
+                <div class="c_r">
+
+                </div>
+                <div class="r_c">
+
+                </div>
+                <div class="l_c">
+
+                </div>
+
+            </div>
+
+
+            <div class="answer-controls" style="margin-top: 10px">
+                <button class="control-btn" onclick="playAsn(-1)">上一步</button>
+                <button class="control-btn" id="showAnswer" onclick="playAsn(1)">下一步</button>
+                <button class="control-btn" onclick="playAsn(0)">重置</button>
+            </div>
+
+            <div class="regularity">
+                <div class="l">
+                    规律
+                </div>
+                <div class="r">
+                    <div class="item list1" data-order="1">
+                        <p>A冷源,气压 <span data-text="高" class="blank"></span> , 气流 <span data-text="下沉"
+                                                                                              class="blank"></span>;
+                            B热源,气压 <span data-text="低" class="blank"></span> , 气流 <span data-text="上升"
+                                                                                               class="blank"></span>。
+                        </p>
+                    </div>
+                    <div class="item list2" data-order="2">
+                        <p>同一水平面上，空气从 <span data-text="高压" class="blank"></span>流向 <span data-text="低压"
+                                                                                                      class="blank"></span>。
+                        </p>
+                    </div>
+                    <div class="item list3" data-order="3">
+                        <p>A气压 <span class="blank" data-text="高"></span> ,气压面向 <span data-text="高"
+                                                                                            class="blank"></span>处凸出;
+
+                            A'气压 <span class="blank" data-text="低"></span> ,气压面向 <span data-text="低"
+                                                                                              class="blank"></span>处凸出;
+                            <br>
+                            B气压 <span class="blank" data-text="低"></span> ,气压面向 <span data-text="低"
+                                                                                             class="blank"></span>处凸出。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--    应用-->
+    <div id="application" class="section">
+        <h2>热力环流应用</h2>
+        <div class="application-nav">
+            <button class="active" data-target="sea-land-breeze">海陆风</button>
+            <button data-target="mountain-valley-breeze">山谷风</button>
+            <button data-target="urban-breeze">城市风</button>
+        </div>
+        <div id="sea-land-breeze" class="application-section active">
+            <img src="https://tuchuang.org.cn/imgs/2025/05/26/7ad977de2a4b8989.png" alt="海陆风示意图"
+                 style="max-width: 100%; margin-top: 20px; display: block;">
+
+            <!-- 风向箭头 海风形成 -->
+            <div class="sea-wind">
+
+
+                <div class="temp step1 ani-cont">
+                    热
+                </div>
+                <div class="temp step1 ani-cont">
+                    冷
+                </div>
+
+                <div class="btn">
+
+                </div>
+                <div class="arrow_ap down_ap step1 ani-cont"></div>
+                <div class="arrow_ap up_ap step1 ani-cont"></div>
+                <div class="arrow_ap right_ap step2 ani-cont"></div>
+                <div class="arrow_ap left_ap step2 ani-cont"></div>
+                <div class="text step2 ani-cont">
+                    海风
+                </div>
+            </div>
+
+
+            <!--  风向箭头  陆风      -->
+            <div class="land-wind">
+                <div class="temp step1 ani-cont">
+                    冷
+                </div>
+                <div class="temp step1 ani-cont">
+                    热
+                </div>
+                <div class="btn">
+
+                </div>
+                <div class="arrow_ap down_ap step1 ani-cont"></div>
+                <div class="arrow_ap up_ap step1 ani-cont"></div>
+                <div class="arrow_ap right_ap step2 ani-cont"></div>
+                <div class="arrow_ap left_ap step2 ani-cont"></div>
+                <div class="text step2 ani-cont">
+                    陆风
+                </div>
+            </div>
+
+        </div>
+        <div id="mountain-valley-breeze" class="application-section">
+            <img src="https://tuchuang.org.cn/imgs/2025/05/27/ed8e66101e23f219.png" alt="山谷风示意图"
+                 style="max-width: 100%; margin-top: 20px; display: none;">
+
+
+            <div class="valley-wind">
+
+                <div class="temp step1 ani-cont">
+                    冷
+                </div>
+                <div class="temp step1 ani-cont">
+                    热
+                </div>
+
+                <div class="btn">
+
+                </div>
+                <div class="arrow_ap down_ap step1 ani-cont"></div>
+                <div class="arrow_ap up_ap step1 ani-cont"></div>
+                <div class="arrow_ap right_ap step2 ani-cont"></div>
+                <div class="arrow_ap left_ap step2 ani-cont"></div>
+                <div class="text step2 ani-cont">
+                    谷风
+                </div>
+            </div>
+
+            <div class="mountain-wind">
+                <div class="temp step1 ani-cont">
+                    热
+                </div>
+                <div class="temp step1 ani-cont">
+                    冷
+                </div>
+
+                <div class="btn">
+
+                </div>
+                <div class="arrow_ap down_ap step1 ani-cont"></div>
+                <div class="arrow_ap up_ap step1 ani-cont"></div>
+                <div class="arrow_ap right_ap step2 ani-cont"></div>
+                <div class="arrow_ap left_ap step2 ani-cont"></div>
+                <div class="text step2 ani-cont">
+                    山风
+                </div>
+            </div>
+
+
+        </div>
+        <div id="urban-breeze" class="application-section">
+            <img src="https://tuchuang.org.cn/imgs/2025/05/27/db7dffc8a7cdfdc0.png" alt="城市风示意图"
+                 style="max-width: 100%; margin-top: 20px; display: none;">
+
+
+            <div class="urban-wind">
+                <div class="temp step1 ani-cont">
+                    冷
+                </div>
+                <div class="temp step1 ani-cont">
+                    热
+                </div>
+
+                <div class="temp step1 ani-cont">
+                    冷
+                </div>
+
+                <div class="btn">
+
+                </div>
+                <div class="arrow_ap v1 up_ap step1 ani-cont"></div>
+                <div class="arrow_ap v2 down_ap step1 ani-cont"></div>
+                <div class="arrow_ap v3 up_ap step1 ani-cont"></div>
+                <div class="arrow_ap w1 right_ap step2 ani-cont"></div>
+                <div class="arrow_ap w2 left_ap step2 ani-cont"></div>
+                <div class="arrow_ap w3 left_ap step2 ani-cont"></div>
+                <div class="arrow_ap w4 right_ap step2 ani-cont"></div>
+                <!--                <div class="text step2 ani-cont">-->
+                <!--                    谷风-->
+                <!--                </div>-->
+            </div>
+
+
+        </div>
+    </div>
+    <div id="exercise" class="section">
+        <h2>课堂练习</h2>
+        <p>完成以下练习题，检验你对热力环流的理解：</p>
+
+        <div class="quiz-container">
+            <div class="quiz-question" id="question1">
+                <h3>1. 热力环流形成的根本原因是：</h3>
+                <ul class="quiz-options">
+                    <li><input type="radio" name="q1" value="A"> A. 地球自转</li>
+                    <li><input type="radio" name="q1" value="B"> B. 地面冷热不均</li>
+                    <li><input type="radio" name="q1" value="C"> C. 地形差异</li>
+                    <li><input type="radio" name="q1" value="D"> D. 人类活动</li>
+                </ul>
+                <div class="quiz-answer" id="answer1"></div>
+            </div>
+
+            <div class="quiz-question" id="question2">
+                <h3>2. 在热力环流中，空气受热后会：</h3>
+                <ul class="quiz-options">
+                    <li><input type="radio" name="q2" value="A"> A. 收缩下沉，形成高压</li>
+                    <li><input type="radio" name="q2" value="B"> B. 膨胀上升，形成低压</li>
+                    <li><input type="radio" name="q2" value="C"> C. 保持静止</li>
+                    <li><input type="radio" name="q2" value="D"> D. 向四周水平扩散</li>
+                </ul>
+                <div class="quiz-answer" id="answer2"></div>
+            </div>
+
+            <div class="quiz-question" id="question3">
+                <h3>3. 海陆风形成的主要原因是：</h3>
+                <ul class="quiz-options">
+                    <li><input type="radio" name="q3" value="A"> A. 海陆的海拔差异</li>
+                    <li><input type="radio" name="q3" value="B"> B. 海陆的气压差异</li>
+                    <li><input type="radio" name="q3" value="C"> C. 海陆的热力性质差异</li>
+                    <li><input type="radio" name="q3" value="D"> D. 海陆的湿度差异</li>
+                </ul>
+                <div class="quiz-answer" id="answer3"></div>
+            </div>
+
+            <div class="quiz-question" id="question4">
+                <h3>4. 在热力环流中，高空的风向一般是：</h3>
+                <ul class="quiz-options">
+                    <li><input type="radio" name="q4" value="A"> A. 从低压区流向高压区</li>
+                    <li><input type="radio" name="q4" value="B"> B. 从高压区流向低压区</li>
+                    <li><input type="radio" name="q4" value="C"> C. 与等压线垂直</li>
+                    <li><input type="radio" name="q4" value="D"> D. 随机流动</li>
+                </ul>
+                <div class="quiz-answer" id="answer4"></div>
+            </div>
+
+            <div class="quiz-question" id="question5">
+                <h3>5. 城市热岛效应形成的主要原因是：</h3>
+                <ul class="quiz-options">
+                    <li><input type="radio" name="q5" value="A"> A. 城市绿化多</li>
+                    <li><input type="radio" name="q5" value="B"> B. 城市建筑物高</li>
+                    <li><input type="radio" name="q5" value="C"> C. 城市人口密集，释放大量热量</li>
+                    <li><input type="radio" name="q5" value="D"> D. 城市多河流</li>
+                </ul>
+                <div class="quiz-answer" id="answer5"></div>
+            </div>
+
+            <div class="submit-quiz">
+                <button id="submitQuiz">提交答案</button>
+            </div>
+
+            <div class="quiz-result" id="quizResult"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 封面 -->
+<div class="cover" id="cover">
+    <h1>热力环流</h1>
+    <div class="note">
+<span>
+        常州市平陵高级中学
+
+</span>
+        <span>
+            朱静
+        </span>
+    </div>
+</div>
+
+
+<style>
+    #animationStage {
+        position: relative;
+    }
+
+    #airParcel1 {
+        position: absolute;
+        bottom: -2%;
+        left: 20%;
+        z-index: 100;
+        transform: translateX(-50%);
+        opacity: 0;
+    }
+
+    #airParcel2 {
+        position: absolute;
+        bottom: -2%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        opacity: 0;
+    }
+
+    #airParcel3 {
+        position: absolute;
+        bottom: -2%;
+        left: 80%;
+        transform: translateX(-50%);
+        opacity: 0;
+    }
+
+    #canvas {
+        /*width: 100%;*/
+        /*height: 70%;*/
+        position: absolute;
+        top: 0%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /*以left开头的类名*/
+    [class^="left"] {
+        position: absolute;
+        left: 20%;
+        transform: translateX(-50%);
+    }
+
+    [class^="right"] {
+        position: absolute;
+        left: 80%;
+        transform: translateX(-50%);
+    }
+
+    /*自定义属性 data-text */
+    [data-text="高"] {
+        font-weight: bold;
+        color: blue;
+        font-size: 25px;
+
+    }
+
+    [data-text="低"] {
+        font-weight: bold;
+        color: blue;
+        font-size: 25px;
+    }
+
+    [class^="center"] {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .bottom {
+        bottom: 20%;
+
+        opacity: 0;
+    }
+
+    .top {
+        top: 10%;
+        opacity: 0;
+    }
+
+
+    /*字母*/
+    .letter {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: black;
+        z-index: 100;
+    }
+
+    .l1 {
+        bottom: 15%;
+        left: 20%;
+    }
+
+    .l2 {
+        top: 10%;
+        left: 24%;
+    }
+
+    .l3 {
+        bottom: 15%;
+        left: 50%;
+    }
+
+    .l4 {
+        top: 10%;
+        left: 54%;
+    }
+
+    .l5 {
+        bottom: 15%;
+        left: 80%;
+    }
+
+    .l6 {
+        top: 10%;
+        left: 84%;
+    }
+
+
+    /*箭头*/
+    .arrow i {
+        font-size: 50px;
+    }
+
+    #a2 i {
+        color: red;
+    }
+
+    #a1 {
+        position: absolute;
+        top: 10%;
+        left: 20%;
+        transform: translateX(-50%);
+        opacity: 0;
+        height: 150px;
+        width: 15px;
+        background-color: blue;
+    }
+
+    #a1:after {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        /*    三角形*/
+        content: '';
+        border-left: 20px solid transparent;
+        border-top: 14px solid blue;
+        border-right: 20px solid transparent;
+        border-bottom: 14px solid transparent;
+    }
+
+    #a2 {
+        position: absolute;
+        bottom: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        height: 150px;
+        width: 15px;
+        background-color: red;
+
+    }
+
+    #a2:after {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        /*    三角形*/
+        content: '';
+        border-left: 20px solid transparent;
+        border-top: 14px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 14px solid red;
+    }
+
+    #a3 {
+        position: absolute;
+        top: 10%;
+        left: 80%;
+        transform: translateX(-50%);
+        opacity: 0;
+        height: 150px;
+        width: 15px;
+        background-color: blue;
+    }
+
+    #a3:after {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        /*    三角形*/
+        content: '';
+        border-left: 20px solid transparent;
+        border-top: 14px solid blue;
+        border-right: 20px solid transparent;
+        border-bottom: 14px solid transparent;
+    }
+
+    /*空气流动箭头*/
+    .c_l, .c_r {
+        position: absolute;
+        top: 12%;
+    }
+
+    :root {
+        --arrow-color: rgb(122, 82, 19);
+
+    }
+
+    .c_l, .c_r, .r_c, .l_c {
+        width: 20%;
+        height: 14px;
+        color: var(--arrow-color);
+        position: absolute;
+        background: var(--arrow-color);
+        opacity: 0;
+    }
+
+    .c_l:after {
+        content: '';
+        /*    三角形*/
+        border-left: 14px solid transparent;
+        border-top: 20px solid transparent;
+        border-right: 14px solid var(--arrow-color);
+        border-bottom: 20px solid transparent;
+        position: absolute;
+        top: 50%;
+        left: -28px;
+        transform: translateY(-50%);
+    }
+
+    .c_l {
+        left: 45%;
+        transform: translateX(-100%) translateY(30px);
+
+    }
+
+
+    .c_r:after {
+        content: '';
+        /*    三角形*/
+        border-left: 14px solid var(--arrow-color);
+        border-top: 20px solid transparent;
+        border-right: 14px solid transparent;
+        border-bottom: 20px solid transparent;
+        position: absolute;
+        top: 50%;
+        right: -20px;
+        transform: translateY(-50%);
+    }
+
+    .c_r {
+        left: 55%;
+        /*transform: translateX(-50%);*/
+        transform: translateY(30px);
+    }
+
+    .l_c:after {
+        content: '';
+        /*    三角形*/
+        border-left: 14px solid var(--arrow-color);
+        border-top: 20px solid transparent;
+        border-right: 14px solid transparent;
+        border-bottom: 20px solid transparent;
+        position: absolute;
+        top: 50%;
+        right: -20px;
+        transform: translateY(-50%);
+    }
+
+    .l_c {
+        left: 45%;
+        bottom: 26%;
+        transform: translateX(-100%) translateY(-30px);
+    }
+
+    .r_c:after {
+        content: '';
+        /*    三角形*/
+        border-left: 14px solid transparent;
+        border-top: 20px solid transparent;
+        border-right: 14px solid var(--arrow-color);
+        border-bottom: 20px solid transparent;
+        position: absolute;
+        top: 50%;
+        left: -20px;
+        transform: translateY(-50%);
+    }
+
+    .r_c {
+        left: 55%;
+        bottom: 26%;
+        transform: translateY(-30px);
+        /*transform: translateX(-50%);*/
+    }
+
+    /* 出现动画 */
+    @keyframes appear {
+        from {
+            opacity: 0;
+            transform: translateY(20px) translateX(-50%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) translateX(-50%);
+        }
+    }
+
+    /*空气箭头*/
+    @keyframes appear2 {
+        from {
+            opacity: 0;
+            /*transform: translateY(20px) translateX(-50%);*/
+        }
+        to {
+            opacity: 1;
+            /*transform: translateY(0) translateX(-50%);*/
+        }
+    }
+
+    /* 向上*/
+    @keyframes moveUp {
+        0% {
+            opacity: 1;
+            transform: translateY(0) translateX(-50%);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(-70px) translateX(-50%);
+        }
+    }
+
+    /* 向下 */
+    @keyframes moveDown {
+        0% {
+            opacity: 1;
+            transform: translateY(0) translateX(-50%);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(50px) translateX(-50%);
+        }
+    }
+
+
+    /* 规律*/
+    .regularity {
+        display: flex; /*    气压文字*/
+        justify-content: center;
+        gap: 50px;
+        margin-top: 30px;
+        font-size: 30px;
+    }
+
+    .regularity .l {
+        flex-shrink: 0;
+        width: 2.5em;
+    }
+
+    .regularity .r {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .regularity p {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .regularity .blank {
+        width: max-content;
+        min-width: 40px;
+        display: inline-block;
+        text-align: center;
+        border-bottom: 1px solid red;
+        margin: 0 3px;
+    }
+
+    .regularity .item {
+        position: relative;
+    }
+
+    .regularity .item:before {
+        content: attr(data-order) ".";
+        display: block;
+        position: absolute;
+        left: -30px;
+        top: 0;
+        color: red;
+    }
+
+
+    .item [data-text] {
+        font-weight: bold;
+        color: red;
+        font-size: 25px !important;
+    }
+
+
+    /*    海风箭头等定位*/
+
+
+</style>
+<link rel="stylesheet" href="./css/index.css">
+
+<script src="index.js">
+
+</script>
+<script>
+    // 处理导航按钮点击事件
+    const handleNavButtonClick = () => {
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const content = document.getElementById('content');
+        const cover = document.getElementById('cover');
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 移除所有导航按钮的 active 类
+                navButtons.forEach(b => b.classList.remove('active'));
+                // 添加 active 类到当前点击的按钮
+                btn.classList.add('active');
+
+                if (btn.classList.contains('home-btn')) {
+                    // 显示封面，隐藏内容区域
+                    content.style.display = 'none';
+                    cover.style.display = 'flex';
+                } else {
+                    // 显示内容区域，隐藏封面
+                    content.style.display = 'block';
+                    cover.style.display = 'none';
+
+                    const sections = document.querySelectorAll('.section');
+                    // 移除所有章节的 active 类
+                    sections.forEach(s => s.classList.remove('active'));
+                    // 添加 active 类到对应的章节
+                    const targetSectionId = btn.getAttribute('data-target');
+                    const targetSection = document.getElementById(targetSectionId);
+                    targetSection.classList.add('active');
+                }
+            });
+        });
+    };
+
+
+    // 热力环流图切换
+    const handleApplicationSwitch = () => {
+        const appNavButtons = document.querySelectorAll('.application-nav button');
+        const appSections = document.querySelectorAll('.application-section');
+
+        appNavButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 清除所有的 动画内容
+                // $(".ani-cont").hide();
+
+
+                // 移除所有应用按钮的 active 类
+                appNavButtons.forEach(b => b.classList.remove('active'));
+                // 添加 active 类到当前点击的按钮
+                btn.classList.add('active');
+
+                // 查询当前激活的内容
+                $(".application-section.active").hide()
+
+                // 移除所有应用章节的 active 类
+                appSections.forEach(s => s.classList.remove('active'));
+                // 添加 active 类到对应的应用章节
+                const targetAppSectionId = btn.getAttribute('data-target');
+                const targetAppSection = document.getElementById(targetAppSectionId);
+                targetAppSection.classList.add('active');
+                // targetAppSection.show()
+                $(targetAppSection).show()
+
+                // 显示对应的图片
+                appSections.forEach(section => {
+                    const img = section.querySelector('img');
+                    if (section.classList.contains('active')) {
+                        img.style.display = 'block';
+                    } else {
+                        img.style.display = 'none';
+                    }
+                });
+            });
+        });
+    };
+
+
+    const ap1 = document.getElementById('airParcel1');
+    const ap2 = document.getElementById('airParcel2');
+    const ap3 = document.getElementById('airParcel3');
+    // // 箭头
+    const a1 = document.getElementById('a1');
+    const a2 = document.getElementById('a2');
+    const a3 = document.getElementById('a3');
+    //气压文字
+    const lt = document.querySelector('.left-top')
+    const lb = document.querySelector('.left-bottom')
+    const rt = document.querySelector('.right-top')
+    const rb = document.querySelector('.right-bottom')
+    const ct = document.querySelector('.center-top')
+    const cb = document.querySelector('.center-bottom')
+
+    // 获取空气流向箭头
+    const air1 = document.querySelector('.c_l')
+    const air2 = document.querySelector('.c_r')
+    const air3 = document.querySelector('.l_c')
+    const air4 = document.querySelector('.r_c')
+
+
+    // 处理气压和等压面图片切换
+    const handleImageSwitch = () => {
+        const imageElement = document.getElementById('pressureImage');
+        const imageDots = document.querySelectorAll('.image-dot');
+        const imageCount = document.getElementById('imageCount');
+
+        // 图片数组
+        const images = [
+            'https://tuchuang.org.cn/imgs/2025/05/24/a59ee63b91f08124.png',
+            'https://tuchuang.org.cn/imgs/2025/05/26/611e121e9d73fe35.png'
+        ];
+
+        let currentIndex = 0;
+
+        // 更新图片显示
+        const updateImageDisplay = () => {
+            imageElement.src = images[currentIndex];
+            imageCount.textContent = `${currentIndex + 1}/${images.length}`;
+
+            // 更新导航点
+            imageDots.forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        };
+
+        // 点击图片切换
+        imageElement.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateImageDisplay();
+        });
+
+        // 点击导航点切换
+        imageDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                currentIndex = parseInt(dot.getAttribute('data-index'));
+                updateImageDisplay();
+            });
+        });
+    };
+
+    // 处理课堂练习
+    const handleQuiz = () => {
+        const submitBtn = document.getElementById('submitQuiz');
+        const quizResult = document.getElementById('quizResult');
+
+        // 答案解析
+        const answers = {
+            q1: {
+                correct: 'B',
+                explanation: '热力环流的形成主要是由于地面冷热不均，导致温度差异，进而引起空气的垂直和水平运动。'
+            },
+            q2: {
+                correct: 'B',
+                explanation: '空气受热后会膨胀上升，近地面空气密度减小，形成低压；冷却后空气收缩下沉，近地面空气密度增大，形成高压。'
+            },
+            q3: {
+                correct: 'C',
+                explanation: '海陆风形成的主要原因是海陆热力性质差异。陆地比热容小，升温降温快；海洋比热容大，升温降温慢。这种差异导致海陆之间的气压差，从而形成海陆风。'
+            },
+            q4: {
+                correct: 'B',
+                explanation: '在热力环流中，空气总是从高压区流向低压区。在高空，摩擦力较小，风向基本与等压线平行，但仍然是从高压区流向低压区。'
+            },
+            q5: {
+                correct: 'C',
+                explanation: '城市热岛效应是指城市中心温度高于郊区的现象，主要原因是城市人口密集、工业活动和交通运输释放大量热量，以及城市建筑材料的比热容小等因素。'
+            }
+        };
+
+        // 提交答案
+        submitBtn.addEventListener('click', () => {
+            let score = 0;
+            const totalQuestions = 5;
+
+            // 检查每道题的答案
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionId = `question${i}`;
+                const answerId = `answer${i}`;
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+
+                const answerElement = document.getElementById(answerId);
+                answerElement.innerHTML = '';
+
+                if (!selectedOption) {
+                    answerElement.innerHTML = '<div class="incorrect">请选择一个选项</div>';
+                    answerElement.style.display = 'block';
+                    continue;
+                }
+
+                const userAnswer = selectedOption.value;
+                const correctAnswer = answers[`q${i}`].correct;
+
+                if (userAnswer === correctAnswer) {
+                    score++;
+                    answerElement.innerHTML = `
+                            <div class="correct">正确！</div>
+                            <div class="explanation">${answers[`q${i}`].explanation}</div>
+                        `;
+                } else {
+                    answerElement.innerHTML = `
+                            <div class="incorrect">错误！正确答案是 ${correctAnswer}</div>
+                            <div class="explanation">${answers[`q${i}`].explanation}</div>
+                        `;
+                }
+
+                answerElement.style.display = 'block';
+            }
+
+            // 显示结果
+            quizResult.style.display = 'block';
+            if (score === totalQuestions) {
+                quizResult.className = 'quiz-result passed';
+                quizResult.textContent = `恭喜！你答对了所有 ${totalQuestions} 道题！`;
+            } else {
+                quizResult.className = 'quiz-result failed';
+                quizResult.textContent = `你答对了 ${score} 道题，共 ${totalQuestions} 道题。继续加油！`;
+            }
+        });
+    };
+
+
+    // 获取canvas元素和上下文
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('animationStage');
+
+    // 设置canvas尺寸
+    canvas.width = window.innerWidth * 0.8;
+    canvas.height = 320;
+
+    // 定义四条线的位置和弯曲方向
+    const lines = [
+        {y: canvas.height / 4, direction: 'down', progress: 0, height: 998, completed: false},
+        {y: canvas.height / 4 + 50, direction: 'down', progress: 0, height: 1000, completed: false},
+        {y: canvas.height / 4 + 100, direction: 'up', progress: 0, height: 1002, completed: false},
+        {y: canvas.height / 4 + 150, direction: 'up', progress: 0, height: 1004, completed: false},
+    ];
+
+    // 定义线条的起始点和结束点
+    const startX = 100;
+    const endX = canvas.width - 100;
+
+    // 动画速度，控制线条弯曲的速度
+    const animationSpeed = 0.008;
+
+    // 绘制逐渐弯曲的线条
+    function drawCurve(line) {
+        // 计算控制点的 Y 坐标，根据动画进度调整
+        const amplitude = Math.abs(line.y - canvas.height / 2) / 2 + 80;  // 外侧弯曲幅度更大
+        const controlX = (startX + endX) / 2;  // 控制点的 X 坐标
+        let controlY = line.y + (line.direction === 'up' ? 1 : -1) * amplitude * Math.sin(line.progress * Math.PI);
+
+        // 绘制二次贝塞尔曲线
+        ctx.beginPath();
+        ctx.moveTo(startX, line.y);  // 起始点
+        ctx.quadraticCurveTo(controlX, controlY, endX, line.y);  // 贝塞尔曲线
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#d23c21';  // 设置线条颜色
+        ctx.stroke();  // 绘制路径
+
+        // 绘制等压线（---）和结束标记（998）
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#1a1d1f';
+
+        // 绘制起始标记 "等压面"
+        ctx.fillText('等压面', startX - 80, line.y);
+
+        // 绘制结束标记 "998"
+        // ctx.fillText(line.height, endX + 10, line.y);
+    }
+
+    // 动画循环
+    function animate1(endNum) {
+        // 清空画布
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 标记是否所有线条都完成了动画
+        let allLinesCompleted = true;
+
+        lines.forEach((line) => {
+            // 绘制线条
+            drawCurve(line);
+
+            // 增加进度，控制动画速度
+            if (line.progress < endNum) {
+                line.progress += animationSpeed; // 增加进度，控制动画的速度
+            } else {
+                line.progress = 1;  // 保持在动画结束状态
+            }
+
+            // 如果还有线条没有完成，标记 allLinesCompleted 为 false
+            if (line.progress < 1) {
+                allLinesCompleted = false;
+            }
+        });
+
+        // 如果所有线条都完成了一个循环，停止动画
+        if (allLinesCompleted) {
+            return;  // 动画停止，保持最后的状态
+        }
+
+        // 循环调用
+        requestAnimationFrame(() => animate1(endNum))
+    }
+
+
+    // 如果你想重新开始动画，可以调用此方法
+    function play1() {
+        lines.forEach(line => line.progress = 0);  // 重置所有线条的进度
+        animate1(0.5);  // 重新开始动画
+    }
+
+
+    // 在页面尺寸改变时更新 canvas 尺寸
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth * 0.8;
+        canvas.height = 300;
+    });
+    let index = 0;
+
+    function playAnimation(step) {
+        // Reset animation styles
+        function resetAnimations() {
+            ap1.style.animation = '';
+            ap2.style.animation = '';
+            ap3.style.animation = '';
+            a1.style.animation = '';
+            a2.style.animation = '';
+            a3.style.animation = '';
+            lt.style.animation = '';
+            lb.style.animation = '';
+            rt.style.animation = '';
+            rb.style.animation = '';
+            ct.style.animation = '';
+            cb.style.animation = '';
+            air1.style.animation = '';
+            air2.style.animation = '';
+            air3.style.animation = '';
+            air4.style.animation = '';
+        }
+
+        if (step === 1) {
+            animate1(0)
+            resetAnimations();
+
+            // Play the first animation
+            setTimeout(() => {
+                ap1.style.animation = 'appear 1s ease-in-out forwards';
+                ap2.style.animation = 'appear 1s ease-in-out forwards ';
+                ap3.style.animation = 'appear 1s ease-in-out forwards ';
+            }, 500)
+
+            // After 3 seconds, play the second animation
+            setTimeout(() => {
+                a1.style.animation = 'moveDown 1s ease-in-out forwards';
+                a2.style.animation = 'moveUp 1s ease-in-out forwards ';
+                a3.style.animation = 'moveDown 1s ease-in-out forwards ';
+            }, 1000);
+
+            // After 6 seconds, play the final animation
+            setTimeout(() => {
+                lt.style.animation = 'appear 1s ease-in-out forwards';
+                lb.style.animation = 'appear 1s ease-in-out forwards ';
+                rt.style.animation = 'appear 1s ease-in-out forwards ';
+                rb.style.animation = 'appear 1s ease-in-out forwards ';
+                ct.style.animation = 'appear 1s ease-in-out forwards ';
+                cb.style.animation = 'appear 1s ease-in-out forwards ';
+            }, 3000);
+        }
+
+        if (step === 3) {
+            // animate1(0)
+            // resetAnimations();
+            air1.style.animation = '';
+            air2.style.animation = '';
+            air3.style.animation = '';
+            air4.style.animation = '';
+
+            // Play the next animation
+            setTimeout(() => {
+                air1.style.animation = 'appear2 1s ease-in-out forwards';
+                air2.style.animation = 'appear2 1s ease-in-out forwards 0.5s';
+                air3.style.animation = 'appear2 1s ease-in-out forwards 1s';
+                air4.style.animation = 'appear2 1s ease-in-out forwards 1.5s';
+            })
+        }
+
+        if (step === 2) {
+            air1.style.animation = '';
+            air2.style.animation = '';
+            air3.style.animation = '';
+            air4.style.animation = '';
+            play1();
+        }
+        // 重置动画
+        if (step === 4) {
+            resetAnimations()
+            animate1(0)
+            index = 0;
+        }
+    }
+
+    // 上下步
+
+    function playAn(num) {
+        if (num === 1) {
+            index += 1;
+            if (index > 3) {
+                index = 3;
+            }
+            playAnimation(index);
+        }
+        if (num === -1) {
+            index -= 1;
+            if (index < 1) {
+                index = 1;
+            }
+            playAnimation(index);
+        }
+    }
+
+
+    // 播放连续动画的函数
+    function playContinuousAnimation() {
+        playAnimation(1);
+
+        // 第一个动画播放完成后（大约9秒），开始播放第二个动画
+        setTimeout(() => {
+            playAnimation(2);
+        }, 9000);
+
+        // 第二个动画播放完成后（大约11秒），开始播放第三个动画
+        setTimeout(() => {
+            playAnimation(3);
+        }, 11000);
+    }
+
+    // 答案显示 获取 data-text 属性的值  然后加入到对应的元素中  并且添加动画效果
+    // 重置
+    function addOrRemove(step, list) {
+        if (step === 1) {
+            list.forEach(item => {
+                // 添加一个span元素
+                let span = document.createElement('span');
+                // 设置span元素的文本内容为data-text属性的值
+                span.innerHTML = item.getAttribute('data-text');
+                span.style.animation = 'appear 1s ease-in-out forwards';
+                item.appendChild(span);
+            })
+        }
+        if (step === 2) {
+            list.forEach(item => {
+                // 添加一个span元素
+                // 移除元素
+                // 判断是否有子元素
+                if (item.hasChildNodes()) {
+                    item.removeChild(item.lastChild);
+                }
+
+            })
+        }
+    }
+
+
+    function showAnswer(step) {
+        function rest() {
+            let list1 = document.querySelectorAll('.list1 .blank')
+            let list2 = document.querySelectorAll('.list2 .blank')
+            let list3 = document.querySelectorAll('.list3 .blank')
+            addOrRemove(2, list1)
+            addOrRemove(2, list2)
+            addOrRemove(2, list3)
+        }
+
+
+        if (step === 1) {
+            rest()
+            let list1 = document.querySelectorAll('.list1 .blank')
+            addOrRemove(1, list1)
+        }
+        if (step === 2) {
+            let list2 = document.querySelectorAll('.list2 .blank')
+            let list3 = document.querySelectorAll('.list3 .blank')
+            addOrRemove(2, list2)
+            addOrRemove(2, list3)
+            addOrRemove(1, list2)
+        }
+        if (step === 3) {
+            let list3 = document.querySelectorAll('.list3 .blank')
+            addOrRemove(2, list3)
+            addOrRemove(1, list3)
+        }
+        if (step === 0) {
+            rest()
+            answerIndex = 0;
+        }
+    }
+
+    let answerIndex = 0;
+
+    function playAsn(num) {
+        if (num === 1) {
+            answerIndex += 1;
+            if (answerIndex > 3) {
+                answerIndex = 3;
+            }
+            showAnswer(answerIndex);
+        }
+        if (num === -1) {
+
+            answerIndex -= 1;
+            if (answerIndex < 1) {
+                answerIndex = 1;
+            }
+            showAnswer(answerIndex);
+        }
+        if (num === 0) {
+            showAnswer(0)
+        }
+    }
+
+    // playAnimation(1)
+
+
+    function init() {
+        // 调用处理函数
+        handleNavButtonClick();
+        // handleCirculationAnimation();
+        handleQuiz();
+
+        handleImageSwitch();
+
+        // 初始化线条
+        animate1(0);
+
+        handleApplicationSwitch();
+        // // 方便调试  后面可以删除
+        // const content = document.getElementById('content');
+        // const cover = document.getElementById('cover');
+        // content.style.display = 'block';
+        // cover.style.display = 'none';
+        // const sections = document.querySelectorAll('.section');
+        // // 移除所有章节的 active 类
+        // sections.forEach(s => s.classList.remove('active'));
+        // const targetSection = document.getElementById('application');
+        // targetSection.classList.add('active');
+    }
+
+    window.onload = init;
+
+</script>
+</body>
+
+</html>
